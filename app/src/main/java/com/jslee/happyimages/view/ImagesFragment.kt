@@ -1,5 +1,7 @@
 package com.jslee.happyimages.view
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.jslee.happyimages.AppApplication
 import com.jslee.happyimages.R
 import com.jslee.happyimages.data.Repository
 import com.jslee.happyimages.databinding.FragmentImagesBinding
@@ -33,16 +34,20 @@ class ImagesFragment : Fragment() {
     ): View? {
 
         _binding = FragmentImagesBinding.inflate(inflater, container, false)
+
+        imagesViewModel.title.observe(viewLifecycleOwner) {
+            binding.textviewFirst.text = it
+        }
+
+        imagesViewModel.url.observe(viewLifecycleOwner) {
+            binding.buttonFirst.setOnClickListener {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://unsplash.com/photos/yC-Yzbqy7PY"))
+                startActivity(intent)
+            }
+        }
+
         return binding.root
 
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.buttonFirst.setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
-        }
     }
 
     override fun onDestroyView() {

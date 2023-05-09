@@ -1,10 +1,52 @@
 package com.jslee.happyimages.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.jslee.happyimages.data.Repository
+import com.jslee.happyimages.framework.RetrofitApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.IOException
 
 class ImagesViewModel(private val repository: Repository): ViewModel() {
+   // val imageList = repository.getPagingImageList().asLiveData()
+
+
+    private var _title = MutableLiveData<String>()
+    val title: LiveData<String>
+        get() = _title
+
+    private var _url = MutableLiveData<String>()
+    val url: LiveData<String>
+        get() = _url
+
+    init {
+        refreshData()
+    }
+
+    private fun refreshData() {
+        viewModelScope.launch {
+            try {
+                refreshVideos()
+            } catch (networkError: IOException) {
+                // Show a Toast error message and hide the progress bar.
+            }
+        }
+    }
+
+
+    private suspend fun refreshVideos() {
+        withContext(Dispatchers.IO) {
+            _title.postValue(RetrofitApi.retrofitApi.getImageList(5,100)[1].author)
+             _url.postValue(RetrofitApi.retrofitApi.getImageList(5, 100)[1].url)
+        }
+    }
+
 
 }
 
