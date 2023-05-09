@@ -20,9 +20,7 @@ class PagingDataSource(val service: Service) : PagingSource<Int, Picsum>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Picsum> {
         return try {
-            delay(1000) // 1초의 딜레이
-
-            /* 서버와 연동할 때, */
+            delay(200)
 
             val position = params.key ?: INITIAL_LOAD_SIZE
             val offset = if (params.key != null) ((position - 1) * NETWORK_PAGE_SIZE) + 1 else INITIAL_LOAD_SIZE
@@ -40,24 +38,6 @@ class PagingDataSource(val service: Service) : PagingSource<Int, Picsum>() {
                 prevKey = null, // Only paging forward.
                 nextKey = nextKey
             )
-//
-//
-//            val pageId = params.key?: 1
-//            val myModelList = service.getImageList(pageId)
-//
-//            if(myModelList.isNotEmpty()) {
-//                LoadResult.Page(
-//                    data = myModelList,
-//                    prevKey = null,
-//                    nextKey = pageId + 1
-//                )
-//            } else {
-//                LoadResult.Page(
-//                    data = myModelList,
-//                    prevKey = null,
-//                    nextKey = null
-//                )
-//            }
         } catch (e: Exception) {
             LoadResult.Error(e)
         }

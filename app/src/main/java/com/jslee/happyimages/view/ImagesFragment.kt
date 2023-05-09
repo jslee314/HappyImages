@@ -28,7 +28,7 @@ class ImagesFragment : Fragment() {
         ImagesViewModelFactory(Repository())
     }
     private val myModelListPagingAdapter: MyModelListPagingAdapter
-            by lazy { MyModelListPagingAdapter() }
+            by lazy { MyModelListPagingAdapter(requireActivity().applicationContext) }
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -38,22 +38,12 @@ class ImagesFragment : Fragment() {
 
         _binding = FragmentImagesBinding.inflate(inflater, container, false)
 
-//        imagesViewModel.title.observe(viewLifecycleOwner) {
-//            binding.textviewFirst.text = it
-//        }
-
-        imagesViewModel.imageList.observe(viewLifecycleOwner) { pagingData ->
+        imagesViewModel.author.observe(viewLifecycleOwner) { author ->
             lifecycleScope.launch {
-                binding.textviewFirst.text =pagingData.toString()
+                binding.textviewFirst.text = author.toString()
             }
         }
 
-        imagesViewModel.url.observe(viewLifecycleOwner) {
-            binding.buttonFirst.setOnClickListener {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://unsplash.com/photos/yC-Yzbqy7PY"))
-                startActivity(intent)
-            }
-        }
         setUpRecyclerView()
         setUpObserver()
 
@@ -66,7 +56,7 @@ class ImagesFragment : Fragment() {
 
 
         binding.recyclerView.apply {
-            layoutManager = GridLayoutManager(context, 3).apply {
+            layoutManager = GridLayoutManager(context, 2).apply {
                 spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
                     override fun getSpanSize(position: Int): Int {
                         return when (myModelListPagingAdapter.getItemViewType(position)) {
@@ -85,7 +75,6 @@ class ImagesFragment : Fragment() {
                 }
             }
             adapter = myModelListPagingAdapter
-//                .withLoadStateFooter(MyModelListPagingLoadStateAdapter { myModelListPagingAdapter.retry() } )
         }
     }
 

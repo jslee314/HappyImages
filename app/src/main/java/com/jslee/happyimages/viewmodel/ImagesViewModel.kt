@@ -16,14 +16,9 @@ import java.io.IOException
 class ImagesViewModel(private val repository: Repository): ViewModel() {
    val imageList = repository.getMyModelList().asLiveData()
 
-
     private var _title = MutableLiveData<String>()
-    val title: LiveData<String>
+    val author: LiveData<String>
         get() = _title
-
-    private var _url = MutableLiveData<String>()
-    val url: LiveData<String>
-        get() = _url
 
     init {
         refreshData()
@@ -31,20 +26,13 @@ class ImagesViewModel(private val repository: Repository): ViewModel() {
 
     private fun refreshData() {
         viewModelScope.launch {
-            try {
-                refreshVideos()
-
-            } catch (networkError: IOException) {
-                // Show a Toast error message and hide the progress bar.
-            }
+            refreshVideos()
         }
     }
-
 
     private suspend fun refreshVideos() {
         withContext(Dispatchers.IO) {
             _title.postValue(RetrofitApi.retrofitApi.getImageList(5,100)[1].author)
-             _url.postValue(RetrofitApi.retrofitApi.getImageList(5, 100)[1].url)
         }
     }
 

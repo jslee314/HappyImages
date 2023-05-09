@@ -13,8 +13,6 @@ class Repository {
 
     private val myService = object: Service {
 
-        var lastIdx = 1
-
         override suspend fun getImageList(page: Int, limit: Int): List<Picsum> {
             val list = mutableListOf<Picsum>()
             val imageList = RetrofitApi.retrofitApi.getImageList(page,limit)
