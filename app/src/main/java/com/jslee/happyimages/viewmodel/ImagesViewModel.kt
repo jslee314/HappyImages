@@ -14,7 +14,7 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 
 class ImagesViewModel(private val repository: Repository): ViewModel() {
-   // val imageList = repository.getPagingImageList().asLiveData()
+   val imageList = repository.getMyModelList().asLiveData()
 
 
     private var _title = MutableLiveData<String>()
@@ -33,6 +33,7 @@ class ImagesViewModel(private val repository: Repository): ViewModel() {
         viewModelScope.launch {
             try {
                 refreshVideos()
+
             } catch (networkError: IOException) {
                 // Show a Toast error message and hide the progress bar.
             }
